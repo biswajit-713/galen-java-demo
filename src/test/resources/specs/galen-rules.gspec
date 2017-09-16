@@ -1,0 +1,108 @@
+@set
+    PRIMARY_BACKGROUND_COLOR        #2d6ca2
+    SECONDARY_BACKGROUND_COLOR      #f0f0f0
+
+# This file contains the used defined rules implemented for Galen test
+
+##########################################################################################
+# This section lists the available rules
+# 1. inside a container with specified margin on a specified side
+# 2. type of a button (primary, secondary)
+# 3. group elements have height of ${height}
+# 4. elements are aligned vertically above each with specified margin
+# 5. elements are inside container with specified margin
+# 6. located left/right/above/below another element
+# 7. elements are aligned horizontally next to each other with specified margin
+
+
+
+##########################################################################################
+# This section implements the rules
+
+# 1. inside a container with specified margin on a specified side
+# e.g.
+# element:
+#	| located inside container with left margin of 10px
+@rule located inside %{parentContainer} with %{side} margin of %{margin}
+		inside ${parentContainer} ${margin} ${side}
+
+
+# 2. type of a button (primary, secondary)
+# e.g.
+# button:
+#	| should be a primary button
+@rule should be a %{style} button
+	@if ${style == "primary" }
+		color-scheme > 70% ${PRIMARY_BACKGROUND_COLOR}
+	@else ${style == "secondary" }
+		color-scheme > 70% ${SECONDARY_BACKGROUND_COLOR}
+
+
+# 3. group elements have height of ${height}
+# e.g.
+# &group_elements:
+#	height 10px
+@rule %{groups_elements} have %{spec}
+	@forEach [${groups_elements}] as item
+		${item}:
+			${spec}
+
+
+# 4. elements are aligned vertically above each with specified margin
+# e.g.
+# elements_1:
+#	above element_2 10px
+@rule %{objectPattern} are vertically aligned above each other with %{margin} margin
+	@forEach [${objectPattern}] as item, next as nextItem
+		${item}:
+			aligned vertically all ${nextItem}
+			above ${nextItem} ${margin}
+
+# 5. elements are inside contaner with specified margin
+# e.g.
+# element_group:
+#	left-of container 10px
+@rule %{objectPattern} are inside %{parentObject} with %{side} margin of %{margin}
+	@forEach [${objectPattern}] as item
+		${item}:
+			inside ${parentObject} ${margin} ${side}
+
+# 6. located left of/right of/above/below another element
+# e.g.
+# element_1:
+#	| located left of element_2
+@rule located %{side} %{objectPattern}
+	@if ${side == "left of"}
+		left-of ${objectPattern}
+	@elseif ${side == "right of"}
+		right-of ${objectPattern}
+	@elseif ${side == "above"}
+		above ${objectPattern}
+	@elseif ${side == "below"}
+		below ${objectPattern}
+
+# 7. elements are aligned horizontally next to each other with specified margin
+# e.g.
+# elements_1:
+#	left-of element_2 10px
+@rule %{objectPattern} are horizontally aligned next to each other with %{margin} margin
+	@forEach [${objectPattern}] as item, next as nextItem
+		${item}:
+			aligned horizontally all ${nextItem}
+			left-of ${nextItem} ${margin}
+
+# 8. elements have same height and width
+# e.g.
+# elements_1:
+#	width 100 % of element_2/width
+#	length 100 % of element_2/length
+@rule %{objectPattern} have same height and width
+	@forEach [${objectPattern}] as item, next as nextItem
+		${item}:
+			width 100 % of ${nextItem}/width
+			height 100 % of ${nextItem}/height
+
+
+# 9.
+
+##########################################################################################

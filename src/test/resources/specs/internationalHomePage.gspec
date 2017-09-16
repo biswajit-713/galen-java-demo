@@ -1,0 +1,25 @@
+@import galen-rules.spec
+
+@objects
+    country-flag    css     img.flag-icon
+    change-country  css     button.country-selector-link span.link-text
+    email-input     css     input.email-signup__input
+    email-submit    css     button.email-signup__submit
+
+
+@groups
+    country-changer-items-desktop         country-flag,change-country
+    country-changer-items-mobile          change-country,country-flag
+    email-signup-items                    email-input,email-submit
+
+@set
+    no_margin   ~ 0px
+
+= Header =
+    @on desktop, tablet
+        | &country-changer-items-desktop are horizontally aligned next to each other with 3px margin
+    @on mobile
+        | &country-changer-items-mobile are horizontally aligned next to each other with 3px margin
+
+= Footer =
+        | &email-signup-items are horizontally aligned next to each other with ${no_margin} margin
