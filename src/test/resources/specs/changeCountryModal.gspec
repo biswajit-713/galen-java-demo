@@ -1,0 +1,28 @@
+
+@objects
+    change-country-image        css     div.country-selector-modal__image
+    description-text            css     div.country-selector-modal__copyText>p:nth-child(1)
+    shipping-country-list       css     select.country-select
+    shipping-currency-list      css     select.currency-select
+    confirm-button              css     div.country-selector-modal__confirm-button>button
+    cancel-button               css     div.country-selector-modal__cancel-button>button
+
+@groups
+    modal-buttons               confirm-button, cancel-button
+
+@set
+    button_horizontal_margin             3px
+    button_vertical_margin               3px
+
+= Modal =
+    @on desktop, tablet
+        | &modal-buttons are horizontally aligned next to each other with ${button_horizontal_margin} margin
+
+        change-country-image:
+            | located ${button_horizontal_margin} left of description-text
+
+    @on mobile
+        | &modal-buttons are aligned vertically above each other with ${button_vertical_margin} margin
+
+        change-country-image:
+            absent
