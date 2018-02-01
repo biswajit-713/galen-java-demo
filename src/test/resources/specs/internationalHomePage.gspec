@@ -1,25 +1,75 @@
-@import galen-rules.spec
+@import galen-rules.gspec
 
 @objects
-    country-flag    css     img.flag-icon
-    change-country  css     button.country-selector-link span.link-text
-    email-input     css     input.email-signup__input
-    email-submit    css     button.email-signup__submit
-
+    country-flag                css     img.flag-icon
+    change-country              css     button.country-selector-link span.link-text
+    email-input                 css     input.email-signup__input
+    email-submit                css     button.email-signup__submit
+    footer-link-container       css     div.footer-links-left
+    social-media-section-title  css     div.social-media-section>h3.social-media__title
+    social-media-link-group-*   css     div.social-media-section:nth-of-type(1) a.social-media__logo
+    sister-site-list            css     ul.footer-seo
+    promo-ticker                css     div.promo-ticker
+    brand-site-logo             css     a.header-brand-site-logo-container__link
+    navigation-silo             css     nav#silo-navigation
+    navigation-silos-*          css     nav#silo-navigation>ul>li a.silo-link>span
+    customer-support-container  css     div.mobile-only footerCustomerSupportContainer
+    footer-call                 css     div.footerCallContainer>a.footerCustomerSupportContainer__anchor
+    footer-chat                 css     div.footerChatContainer>button
 
 @groups
     country-changer-items-desktop         country-flag,change-country
     country-changer-items-mobile          change-country,country-flag
     email-signup-items                    email-input,email-submit
+    navigation-silo-group                 navigation-silos-*
+    silo-logo-group                       brand-site-logo,navigation-silo
+    footer-customer-support-options       footer-call,footer-chat
 
 @set
     no_margin   ~ 0px
+    desktop_footer_distance     ~ 36px
+    tablet_footer_distance      146px
+    mobile_footer_distance      ~ 36px
+    social_media_icon_margin    ~ 30px
+    desktop_logo_width          ~ 170px
+    desktop_logo_height         ~ 78px
+    mobile_logo_width          ~ 170px
+    mobile_logo_height         ~ 70px
+    silo_margin                 ~ 33px
+    logo_silo_margin            ~ 5px
 
 = Header =
     @on desktop, tablet
-        | &country-changer-items-desktop are horizontally aligned next to each other with 3px margin
+        | brand-site-logo is ${desktop_logo_width} wide and ${desktop_logo_height} high
+        | &navigation-silo-group are horizontally aligned next to each other with ${silo_margin} margin
+        | &silo-logo-group are vertically left aligned with ${logo_silo_margin} margin
     @on mobile
+        | brand-site-logo is ${mobile_logo_width} wide and ${mobile_logo_height} high
         | &country-changer-items-mobile are horizontally aligned next to each other with 3px margin
+        | email-input is 20px above social-media-section-title
+    @on desktop
+        | email-input is located 85px left of footer-link-container
+        | email-input is located 35px above social-media-section-title
+    @on tablet, mobile
+        | email-input is located 15px below footer-link-container
+    @on tablet
+        | email-input is located 20px left social-media-section-title
+
 
 = Footer =
-        | &email-signup-items are horizontally aligned next to each other with ${no_margin} margin
+    | &email-signup-items are horizontally aligned next to each other with ${no_margin} margin
+#    | social-media-link-group-* are horizontally aligned next to each other with ${social_media_icon_margin} margin
+    | email-input is located ${desktop_footer_distance} above social-media-section-title
+
+    @on desktop
+        | email-input is located ${desktop_footer_distance} above social-media-section-title
+        | sister-site-list is horizontally aligned in the center of the screen
+        | footer-call is absent in the screen
+        | footer-chat is absent in the screen
+    @on tablet
+        | email-input is located ${tablet_footer_distance} left of social-media-section
+        | sister-site-list is horizontally aligned in the center of the screen
+    @on mobile
+        | email-input is located ${mobile_footer_distance} above social-media-section
+        | sister-site-link is absent in the screen
+        | &footer-customer-support-options are horizontally aligned next to each other with ${social_media_icon_margin} margin

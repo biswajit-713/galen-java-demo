@@ -15,7 +15,6 @@
 # 7. elements are aligned horizontally next to each other with specified margin
 
 
-
 ##########################################################################################
 # This section implements the rules
 
@@ -58,7 +57,7 @@
 			aligned vertically all ${nextItem}
 			above ${nextItem} ${margin}
 
-# 5. elements are inside contaner with specified margin
+# 5. elements are inside container with specified margin
 # e.g.
 # element_group:
 #	left-of container 10px
@@ -71,15 +70,15 @@
 # e.g.
 # element_1:
 #	| located left of element_2
-@rule located %{side} %{objectPattern}
+@rule located %{pixelDistance} %{side} %{objectPattern}
 	@if ${side == "left of"}
-		left-of ${objectPattern}
+		left-of ${objectPattern} ${pixelDistance}
 	@elseif ${side == "right of"}
-		right-of ${objectPattern}
+		right-of ${objectPattern} ${pixelDistance}
 	@elseif ${side == "above"}
-		above ${objectPattern}
+		above ${objectPattern} ${pixelDistance}
 	@elseif ${side == "below"}
-		below ${objectPattern}
+		below ${objectPattern} ${pixelDistance}
 
 # 7. elements are aligned horizontally next to each other with specified margin
 # e.g.
@@ -103,6 +102,64 @@
 			height 100 % of ${nextItem}/height
 
 
-# 9.
+# element-1 is located x-pixel left of/right of/above/below element-2
+# e.g.
+# element_1:
+#	| located left of element_2
+@rule %{objectPattern1} is located %{pixelDistance} %{side} %{objectPattern2}
+	@if ${side == "left"}
+        ${objectPattern1}:
+            left-of ${objectPattern2} ${pixelDistance}
+	@elseif ${side == "right of"}
+        ${objectPattern1}:
+		right-of ${objectPattern2} ${pixelDistance}
+	@elseif ${side == "above"}
+        ${objectPattern1}:
+		above ${objectPattern2} ${pixelDistance}
+	@elseif ${side == "below"}
+        ${objectPattern1}:
+		below ${objectPattern2} ${pixelDistance}
 
+
+# sister-site-list is vertically aligned in the center of the screen
+# e.g.
+# element-1:
+#   | centered vertically inside ${element-2}
+@rule %{element_1} is %{axis} aligned in the center of the %{element_2}
+    ${element_1}:
+        centered ${axis} inside ${element_2}
+
+# sister-site-link is absent in the screen
+# e.g.
+# element-1:
+#   | absent
+@rule %{element_1} is absent in the screen
+    ${element_1}:
+        absent
+
+# brand-site-logo is ${desktop_logo_width} wide and ${desktop_logo_height} high
+@rule %{element_1} is %{desktop_logo_width} wide and %{desktop_logo_height} high
+    ${element_1}:
+        width ${desktop_logo_width}
+        height ${desktop_logo_height}
+
+# silo-logo-group are vertically/horizontally left/right/top/bottom/center/all aligned with ${logo_silo_margin} margin
+@rule %{group_element} are %{alignment} %{side} aligned with %{alignment_margin} margin
+    @forEach [${group_element}] as item, next as nextItem
+        @if ${side == "left"}
+            ${item}:
+                above ${nextItem} ${logo_silo_margin}
+                aligned vertically left ${nextItem}
+        @elseif ${side == "right"}
+            ${item}:
+                above ${nextItem} ${logo_silo_margin}
+                aligned vertically right ${nextItem}
+        @elseif ${side == "top"}
+            ${item}:
+                left-of ${nextItem} ${logo_silo_margin}
+                aligned horizontally top ${nextItem}
+        @elseif ${side == "bottom"}
+            ${item}:
+                left-of ${nextItem} ${logo_silo_margin}
+                aligned horizontally bottom ${nextItem}
 ##########################################################################################
