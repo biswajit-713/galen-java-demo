@@ -11,6 +11,11 @@ targetCompatibility = 1.8
 
 ext {
     deviceList = ['chrome', 'firefox', 'windows', 'iPhone']
+
+    ext {
+        galenVersion = '2.3.6'
+        testNGVersion = '6.7'
+    }
 }
 
 repositories {
@@ -18,23 +23,23 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.galenframework', name: 'galen-java-support', version:'2.3.6'
+    compile group: 'com.galenframework', name: 'galen-java-support', version:"$galenVersion"
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version:'1.3'
-    testCompile group: 'org.testng', name: 'testng', version:'6.7'
+    testCompile group: 'org.testng', name: 'testng', version:"$testNGVersion"
 }
 
-
-task responsivenessTest (type: Test) {
-    systemProperty("galen.device", System.getProperty("galen.device"))
-//    if (System.getProperty("galen.device") == "CHROME") {
-//        dependsOn chromeTest
-//    }
-    useTestNG()
-}
 
 task chromeTest {
     def chromeDriverFileName = "chromedriver"
-    println("Chrome driver:" + chromeDriverFileName)
 }
+
+task responsivenessTest (type: Test) {
+    systemProperty("galen.device", System.getProperty("galen.device"))
+    if (System.getProperty("galen.device") == "CHROME") {
+        dependsOn chromeTest
+    }
+    useTestNG()
+}
+
 
 
