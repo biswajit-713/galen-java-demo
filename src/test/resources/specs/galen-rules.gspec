@@ -90,6 +90,13 @@
 			aligned horizontally all ${nextItem}
 			left-of ${nextItem} ${margin}
 
+@rule %{objectPattern} are vertically aligned next to each other with %{margin} margin
+	@forEach [${objectPattern}] as item, next as nextItem
+		${item}:
+			aligned vertically all ${nextItem}
+			above ${nextItem} ${margin}
+
+
 # 8. elements have same height and width
 # e.g.
 # elements_1:

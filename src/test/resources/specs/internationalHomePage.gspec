@@ -48,7 +48,7 @@
         | &country-changer-items-mobile are horizontally aligned next to each other with 3px margin
         | email-input is 20px above social-media-section-title
     @on desktop
-        | email-input is located 85px left of footer-link-container
+        | email-input is located 105px left footer-link-container
         | email-input is located 35px above social-media-section-title
     @on tablet, mobile
         | email-input is located 15px below footer-link-container

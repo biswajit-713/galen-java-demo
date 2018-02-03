@@ -1,0 +1,29 @@
+@import galen-rules.gspec
+
+@objects
+    main-media-section                  css     div.main-media
+    main-media-container                css     div.main-media__container
+    alternate-images-section            css     div.alternate-images
+        alternate-images-*              css     img
+    main-media-controls                 css     div.main-media__controls
+    favorite-icon                       css     img.main-media__fav-btn-img
+    zoom-icon                           css     span.main-media__zoom-btn-img
+
+@groups
+    media-group         main-media-container,main-media-controls,alternate-images-section
+
+@set
+    alternate_image_margin              5px
+    product_media_margin                ~ 65px
+    media_control_horizontal_margin     ~ 50px
+    media_margin                        ~ 0px
+
+= Media =
+    @on desktop, tablet
+        | &media-group are vertically aligned next to each other with ${media_margin} margin
+        | alternate-images-section.alternate-images-* are horizontally aligned next to each other with ${alternate_image_margin} margin
+        | main-media-container is located ${product_media_margin} above alternate-images-section
+        | favorite-icon is located ${media_control_horizontal_margin} left zoom-icon
+
+    @on mobile
+        |alternate-images is absent in the screen
