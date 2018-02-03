@@ -2,6 +2,7 @@ package com.galenframework.java.sample.tests;
 
 import com.galenframework.java.sample.components.BoilerPlate;
 import com.galenframework.java.sample.components.GalenTestBase;
+import com.galenframework.java.sample.components.RetryAnalyzer;
 import com.galenframework.java.sample.pageObjects.HomePage;
 import org.testng.annotations.Test;
 
@@ -9,7 +10,7 @@ import java.io.IOException;
 
 public class HomePageTest extends GalenTestBase {
 
-    @Test(dataProvider = "devices")
+    @Test(dataProvider = "devices", retryAnalyzer = RetryAnalyzer.class)
     public void homePage_EmailSection_onDevice(TestDevice device) throws IOException {
 
         load("/");
@@ -19,7 +20,7 @@ public class HomePageTest extends GalenTestBase {
 
     }
 
-    @Test(dataProvider = "devices", enabled = false)
+    @Test(dataProvider = "devices", retryAnalyzer = RetryAnalyzer.class, enabled = false)
     public void  countryChanger_modal_onDevice(TestDevice device) throws  IOException {
         load("/");
         BoilerPlate.RegisterCookie(getDriver());
