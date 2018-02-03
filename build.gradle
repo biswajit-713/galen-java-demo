@@ -19,7 +19,7 @@ ext {
 }
 
 repositories {
-     mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
