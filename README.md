@@ -9,4 +9,4 @@ Prerequsites
 Run the tests
 OSX - $./gradlew responsivenessTest -Dgalen.device=CHROME
 
-Currently the test runs only on Chrome.
+Currently the test runs only on Chrome v61 and above.
