@@ -1,3 +1,6 @@
+import org.apache.tools.ant.filters.*
+import org.apache.tools.ant.taskdefs.condition.Os
+
 apply plugin: 'java'
 apply plugin: 'maven'
 
@@ -11,10 +14,11 @@ targetCompatibility = 1.8
 
 ext {
     deviceList = ['chrome', 'firefox', 'windows', 'iPhone']
-
+    applicationUrl = "http://dev-int.nmgcloudapps.com"
     ext {
         galenVersion = '2.3.6'
         testNGVersion = '6.7'
+        groovyVersion = '2.4.12'
     }
 }
 
@@ -26,20 +30,35 @@ dependencies {
     compile group: 'com.galenframework', name: 'galen-java-support', version:"$galenVersion"
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version:'1.3'
     testCompile group: 'org.testng', name: 'testng', version:"$testNGVersion"
+    testCompile "org.codehaus.groovy:groovy-all:$groovyVersion"
 }
 
-
-task chromeTest {
-    def chromeDriverFileName = "chromedriver"
-}
+// load the environment configuration
+loadConfiguration()
 
 task responsivenessTest (type: Test) {
     systemProperty("galen.device", System.getProperty("galen.device"))
-    if (System.getProperty("galen.device") == "CHROME") {
-        dependsOn chromeTest
-    }
+    systemProperty("applicationUrl", System.getProperty("url", "$applicationUrl"))
+//    if (System.getProperty("galen.device") == "CHROME") {
+//        dependsOn chromeTest
+//    }
     useTestNG()
 }
 
+//chromeTest {
+//    dependsOn unzipChromeDriver
+//    def chromeDriverFileName = Os.isFamily(Os.FAMILY_WINDOWS) ? "chromedriver.exe" : "chromedriver"
+//    systemProperty "webdriver.chrome.driver", new File(unzipChromeDriver.outputs.files.singleFile, chromedriverFilename).absolutePath
+//}
+
+def loadConfiguration(){
+    def environment = hasProperty('env') ? env: 'test'
+    println("The env is " + environment)
+    project.ext.environment = environment
+
+    def configFile = file('config.groovy')
+    def config = new ConfigSlurper(environment).parse(configFile.toURI().toURL())
+    project.ext.config = config
+}
 
 

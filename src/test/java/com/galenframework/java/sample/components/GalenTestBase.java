@@ -22,7 +22,7 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
     private static final String USER_NAME = "biswajitpattanay1";
     private static final String API_KEY = "s1xiWnqpZZ2xyoCntHoj";
     private static final String ENV_URL = "https://" + USER_NAME + ":" + API_KEY + "@hub-cloud.browserstack.com/wd/hub";
-    private static final String APP_URL = "http://dev-int.nmgcloudapps.com";
+    private static final String APP_URL = System.getProperty("applicationUrl");
     private String selectedBrowser;
 
 
