@@ -34,57 +34,32 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
 
         //TODO - include implementation for firefox, chrome, Safari, BrowserStack
         WebDriver driver = null;
-        DesiredCapabilities caps;
-        String testBrowser = "chromeDesktop";
-        System.out.println("The browsr is " + testBrowser);
+        String testBrowser = System.getProperty("device").toLowerCase();
+        String platform = System.getProperty("platform").toLowerCase();
 
-        switch (testBrowser.toUpperCase()) {
-            case "CHROMEDESKTOP":
-                caps = DesiredCapabilities.chrome();
-                ChromeOptions options = new ChromeOptions();
-                options.merge(caps);
-                ChromeDriverService service = new ChromeDriverService.Builder()
-                                            .usingAnyFreePort()
-                                            .build();
-                driver = new ChromeDriver(options);
-                break;
-            case "FIREFOX":
-                caps = DesiredCapabilities.firefox();
-                driver = new FirefoxDriver(caps);
-                break;
-            case "SAFARI":
-                caps = DesiredCapabilities.safari();
-                driver = new SafariDriver(caps);
-                break;
-            case "BROWSERSTACK_WINDOWS_CHROME":
-                caps = new DesiredCapabilities();
-                caps.setCapability("platform", "WINDOWS");
-                caps.setCapability("browserName", "chrome");
-                driver = new RemoteWebDriver(new URL(ENV_URL), caps);
+        if (platform.equalsIgnoreCase("local")){
+            driver = returnDriverForLocalEnvironment(driver, testBrowser);
 
-                break;
-            case "BROWSERSTACK_IPHONE7":
-                caps = new DesiredCapabilities();
-                caps.setCapability("realMobile", true);
-                caps.setCapability("device", "iPhone 7");
-                caps.setCapability("browserName", "iPhone");
-                caps.setCapability("browserstack.video", true);
-                driver = new RemoteWebDriver(new URL(ENV_URL), caps);
-                break;
-            default:
-                driver = new FirefoxDriver();
-                break;
-        }
-        // Resize the window
-
-        if (args.length > 0) {
-            if (args[0] != null && args[0] instanceof TestDevice) {
-                TestDevice device = (TestDevice)args[0];
-                if (device.getScreenSize() != null) {
-                    driver.manage().window().setSize(device.getScreenSize());
+            // Resize the window
+            if (args.length > 0) {
+                if (args[0] != null && args[0] instanceof TestDevice) {
+                    TestDevice device = (TestDevice)args[0];
+                    if (device.getScreenSize() != null) {
+                        driver.manage().window().setSize(device.getScreenSize());
+                    }
                 }
             }
+
+        } else if (platform.equalsIgnoreCase("browserstack")) {
+
+        } else if (platform.equalsIgnoreCase("saucelabs")) {
+
+        } else if (platform.equalsIgnoreCase("mobileDevice")) {
+
+        } else if (platform.equalsIgnoreCase("mobileSimulator")) {
+
         }
+
         return driver;
 
     }
@@ -99,23 +74,35 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
 
         selectedBrowser = System.getProperty("device");
         return new Object[][] {
-//                {new TestDevice("desktop", new Dimension(1366, 800), asList("desktop"))}
                 {new TestDevice(selectedBrowser,
                         new Dimension(Integer.parseInt(System.getProperty("device.width")),
                                 Integer.parseInt(System.getProperty("device.height"))),
-                        asList(deviceBySelectedBrowser(selectedBrowser)))}
+                        asList(System.getProperty("device.type")))}
         };
     }
 
-    private String deviceBySelectedBrowser(String selectedBrowser) {
-        switch (selectedBrowser) {
-            case "chromeDesktop":
-                return "desktop";
-            case "BROWSERSTACK_IPHONE7":
-                return "mobile";
-            default:
-                return "desktop";
+    // set up the local environment
+    private WebDriver returnDriverForLocalEnvironment(WebDriver driver, String device){
+
+        DesiredCapabilities caps;
+
+        if (device.contains("chrome")) {
+            if (device.contains("chrome")){
+                ChromeDriverService service = new ChromeDriverService.Builder()
+                        .usingAnyFreePort()
+                        .build();
+                driver = new ChromeDriver(service);
+            } else if (device.contains("firefox")) {
+                caps = DesiredCapabilities.firefox();
+                driver = new FirefoxDriver(caps);
+            } else if (device.contains("safari")) {
+                caps = DesiredCapabilities.safari();
+                driver = new SafariDriver(caps);
+            }
+
         }
+
+        return driver;
     }
 
     public static class TestDevice {
