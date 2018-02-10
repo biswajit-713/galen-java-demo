@@ -52,6 +52,7 @@ task responsivenessTest (type: Test) {
     System.setProperty("applicationUrl", result.getAt("environment").getAt(System.getProperty("env", "test")))
     System.setProperty("platform", System.getenv('PLATFORM'))
     System.setProperty("device", System.getProperty("galen.device", "chromeDesktop"))
+    System.setProperty("device.type", result["device"][System.getProperty("device")]["deviceType"])
     System.setProperty("device.width", result["device"][System.getProperty("device")]["width"].toString())
     System.setProperty("device.height", result["device"][System.getProperty("device")]["height"].toString())
 
