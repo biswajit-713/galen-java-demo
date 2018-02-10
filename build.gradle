@@ -1,8 +1,9 @@
-import org.apache.tools.ant.filters.*
 import org.apache.tools.ant.taskdefs.condition.Os
+import groovy.json.JsonSlurper
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply from: "gradle/osSpecificDownloads.gradle"
 
 group = 'com.galenframework'
 version = '0.1-SNAPSHOT'
@@ -14,7 +15,6 @@ targetCompatibility = 1.8
 
 ext {
     deviceList = ['chrome', 'firefox', 'windows', 'iPhone']
-    applicationUrl = "http://dev-int.nmgcloudapps.com"
     ext {
         galenVersion = '2.3.6'
         testNGVersion = '6.7'
@@ -31,34 +31,54 @@ dependencies {
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version:'1.3'
     testCompile group: 'org.testng', name: 'testng', version:"$testNGVersion"
     testCompile "org.codehaus.groovy:groovy-all:$groovyVersion"
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.16.16'
 }
 
-// load the environment configuration
-loadConfiguration()
+task chromeTest {
+    dependsOn unzipChromeDriver
+    def chromeDriverFileName = Os.isFamily(Os.FAMILY_WINDOWS) ? "chromedriver.exe" : "chromedriver"
+//    systemProperty "webdriver.chrome.driver", new File(unzipChromeDriver.outputs.files.singleFile, chromedriverFilename).absolutePath
+}
+
 
 task responsivenessTest (type: Test) {
-    systemProperty("galen.device", System.getProperty("galen.device"))
-    systemProperty("applicationUrl", System.getProperty("url", "$applicationUrl"))
-//    if (System.getProperty("galen.device") == "CHROME") {
-//        dependsOn chromeTest
+
+    // skip the cache and always run the task
+    outputs.upToDateWhen {
+        false
+    }
+
+    def result = loadJSONConfiguration()
+    System.setProperty("applicationUrl", result.getAt("environment").getAt(System.getProperty("env", "test")))
+    System.setProperty("platform", System.getenv('PLATFORM'))
+    System.setProperty("device", System.getProperty("galen.device", "chromeDesktop"))
+    System.setProperty("device.width", result["device"][System.getProperty("device")]["width"].toString())
+    System.setProperty("device.height", result["device"][System.getProperty("device")]["height"].toString())
+
+    systemProperties System.properties
+
+//    if (System.getProperty("galen.device").toUpperCase() == "CHROME") {
+//        chromeTest
 //    }
     useTestNG()
 }
 
-//chromeTest {
-//    dependsOn unzipChromeDriver
-//    def chromeDriverFileName = Os.isFamily(Os.FAMILY_WINDOWS) ? "chromedriver.exe" : "chromedriver"
-//    systemProperty "webdriver.chrome.driver", new File(unzipChromeDriver.outputs.files.singleFile, chromedriverFilename).absolutePath
+//def loadConfiguration(){
+//    def device = System.getProperty("galen.device", "test")
+//    def environment = System.getProperty("env", "test")
+//    project.ext.environment = environment
+//    project.ext.device = device
+//
+//    def configFile = file('config.groovy')
+//    def envConfig = new ConfigSlurper(environment).parse(configFile.toURI().toURL())
+//    def deviceConfig = new ConfigSlurper(device).parse(configFile.toURI().toURL())
+//    project.ext.envConfig = envConfig
+//    project.ext.deviceConfig = deviceConfig
 //}
 
-def loadConfiguration(){
-    def environment = hasProperty('env') ? env: 'test'
-    println("The env is " + environment)
-    project.ext.environment = environment
-
-    def configFile = file('config.groovy')
-    def config = new ConfigSlurper(environment).parse(configFile.toURI().toURL())
-    project.ext.config = config
+def loadJSONConfiguration(){
+    def slurper = new JsonSlurper()
+    def result = slurper.parse(new File("config.json"))
+    return result
 }
-
 
