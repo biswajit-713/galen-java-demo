@@ -28,7 +28,6 @@ public class BoilerPlate {
                 .expiresOn(new Date(2019, 10, 10))
                 .isHttpOnly(false)
                 .isSecure(true)
-                .path("/")
                 .build();
 
         Cookie countrySelectorCookie = new Cookie.Builder("COUNTRY_SELECTOR", "true")
@@ -57,6 +56,10 @@ public class BoilerPlate {
                 .expiresOn(new Date(2019, 10, 10))
                 .isHttpOnly(false)
                 .isSecure(true)
+                .domain(".neimanmarcus.com")
+                .expiresOn(new Date(2019, 10, 10))
+                .isHttpOnly(true)
+                .isSecure(false)
                 .build();
 
         driver.manage().addCookie(homePageCookie);

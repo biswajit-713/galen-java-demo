@@ -14,6 +14,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 ext {
+    deviceList = ['chrome', 'firefox', 'windows', 'iPhone']
     ext {
         galenVersion = '2.3.6'
         testNGVersion = '6.7'
@@ -37,7 +38,10 @@ dependencies {
 
 task chromeDriverSetup {
     dependsOn unzipChromeDriver
+}
 
+task chromeTest {
+    dependsOn unzipChromeDriver
     def chromeDriverFileName = Os.isFamily(Os.FAMILY_WINDOWS) ? "chromedriver.exe" : "chromedriver"
 //    systemProperty "webdriver.chrome.driver", new File(unzipChromeDriver.outputs.files.singleFile, chromedriverFilename).absolutePath
 }
@@ -74,6 +78,11 @@ task responsivenessTest (type: Test) {
                     && System.getProperty("device.type").equalsIgnoreCase() == "mobile")) {
         chromeDriverSetup
     }
+    systemProperties System.properties
+
+//    if (System.getProperty("galen.device").toUpperCase() == "CHROME") {
+//        chromeTest
+//    }
     useTestNG()
 }
 

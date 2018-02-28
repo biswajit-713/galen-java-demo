@@ -1,17 +1,20 @@
 package com.galenframework.java.sample.components;
 
+import com.galenframework.api.Galen;
 import com.galenframework.testng.GalenTestNgTestBase;
 import lombok.SneakyThrows;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.testng.annotations.DataProvider;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +53,8 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
             }
         } else if (platform.equalsIgnoreCase("browserstack")) {
             driver = getDriverForBrowserStack(driver, testBrowser);
+
+        } else if (platform.equalsIgnoreCase("browserstack")) {
 
         } else if (platform.equalsIgnoreCase("saucelabs")) {
 
@@ -111,7 +116,7 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
 
     //set up for browserstack
     @SneakyThrows
-    private WebDriver getDriverForBrowserStack(WebDriver driver, String device){
+    private WebDriver getDriverForBrowserStack(WebDriver driver, String device) {
         String BROWSERSTACK_URL = "https://"
                 + System.getProperty("browserStack.userName")
                 + ":" + System.getProperty("browserStack.apiKey")
@@ -122,16 +127,16 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
         caps.setCapability("realMobile", System.getProperty("browserStack.captureVideo"));
         caps.setCapability("acceptSslCerts", "true");
 
-        if (device.equalsIgnoreCase("iPhone7")){
+        if (device.equalsIgnoreCase("iPhone7")) {
             caps.setCapability("browserName", "iPhone");
             caps.setCapability("device", "iPhone 7");
-        } else if (device.equalsIgnoreCase("iPhone8")){
+        } else if (device.equalsIgnoreCase("iPhone8")) {
             caps.setCapability("browserName", "iPhone");
             caps.setCapability("device", "iPhone 8");
-        } else if (device.equalsIgnoreCase("iPhoneX")){
+        } else if (device.equalsIgnoreCase("iPhoneX")) {
             caps.setCapability("browserName", "iPhone");
             caps.setCapability("device", "iPhone X");
-        } else if (device.equalsIgnoreCase("chromeDesktop")){
+        } else if (device.equalsIgnoreCase("chromeDesktop")) {
             caps.setCapability("os", "Windows");
             caps.setCapability("os_version", "10");
             caps.setCapability("browser", "Chrome");
@@ -139,8 +144,8 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
         }
 
         return new RemoteWebDriver(new URL(BROWSERSTACK_URL), caps);
-    }
 
+    }
     public static class TestDevice {
         private final String name;
         private final Dimension screenSize;

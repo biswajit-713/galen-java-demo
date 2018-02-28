@@ -16,9 +16,22 @@
 
 = Modal =
     @on desktop, tablet
+<<<<<<< HEAD
         | &modal-buttons are horizontally aligned with ${button_horizontal_margin} margin
         | change-country-image is located ${button_horizontal_margin} left description-text
 
     @on mobile
         | &modal-buttons are aligned vertically above each other with ${button_vertical_margin} margin
         | change-country-image is absent in the screen
+=======
+        | &modal-buttons are horizontally aligned next to each other with ${button_horizontal_margin} margin
+
+        change-country-image:
+            | located ${button_horizontal_margin} left of description-text
+
+    @on mobile
+        | &modal-buttons are aligned vertically above each other with ${button_vertical_margin} margin
+
+        change-country-image:
+            absent
+>>>>>>> e7f72b0e77c78193626f74aad94a31ea3f61afe2
