@@ -2,24 +2,28 @@
 
 @objects
     country-flag                css     img.flag-icon
+    mobile-country-flag         css     div.footer-myaccount-section img.flag-icon
     change-country              css     button.country-selector-link span.link-text
+    mobile-change-country       css     div.footer-myaccount-section button.country-selector-link span.link-text
     email-input                 css     input.email-signup__input
     email-submit                css     button.email-signup__submit
     footer-link-container       css     div.footer-links-left
     social-media-section-title  css     div.social-media-section>h3.social-media__title
+    mobile-social-section-title css     div.footer-content-container__social-box div.social-media-section>h3.social-media__title
     social-media-link-group-*   css     div.social-media-section:nth-of-type(1) a.social-media__logo
     sister-site-list            css     ul.footer-seo
     promo-ticker                css     div.promo-ticker
     brand-site-logo             css     a.header-brand-site-logo-container__link
     navigation-silo             css     nav#silo-navigation
     navigation-silos-*          css     nav#silo-navigation>ul>li a.silo-link>span
-    customer-support-container  css     div.mobile-only footerCustomerSupportContainer
+    mobile-footer-container     css     div.footer-content-container__nav-links
     footer-call                 css     div.footerCallContainer>a.footerCustomerSupportContainer__anchor
     footer-chat                 css     div.footerChatContainer>button
+    mobile-email-input          css     div.footer-content-container__social-box input.email-signup__input
 
 @groups
     country-changer-items-desktop         country-flag,change-country
-    country-changer-items-mobile          change-country,country-flag
+    country-changer-items-mobile          mobile-change-country,mobile-country-flag
     email-signup-items                    email-input,email-submit
     navigation-silo-group                 navigation-silos-*
     silo-logo-group                       brand-site-logo,navigation-silo
@@ -33,10 +37,14 @@
     social_media_icon_margin    ~ 30px
     desktop_logo_width          ~ 170px
     desktop_logo_height         ~ 78px
-    mobile_logo_width          ~ 170px
-    mobile_logo_height         ~ 70px
+    mobile_logo_width          ~ 100px
+    mobile_logo_height         ~ 50px
     silo_margin                 ~ 33px
     logo_silo_margin            ~ 5px
+    email_footer_margin         ~ 50px
+    mobile_email_footer_margin  ~ 55px
+    email_social_margin         ~ 20px
+    chat_call_margin            ~ 78px
 
 = Header =
     @on desktop, tablet
@@ -45,23 +53,18 @@
         | &silo-logo-group are vertically left aligned with ${logo_silo_margin} margin
     @on mobile
         | brand-site-logo is ${mobile_logo_width} wide and ${mobile_logo_height} high
-        | &country-changer-items-mobile are horizontally aligned next to each other with 3px margin
-        | email-input is 20px above social-media-section-title
+        | &country-changer-items-mobile are horizontally aligned next to each other with 0px margin
     @on desktop
-        | email-input is located 105px left footer-link-container
-        | email-input is located 35px above social-media-section-title
-    @on tablet, mobile
-        | email-input is located 15px below footer-link-container
+        | email-input is located ${email_footer_margin} right footer-link-container
+        | email-input is located ${email_social_margin} above social-media-section-title
     @on tablet
-        | email-input is located 20px left social-media-section-title
+        | email-input is located 15px below footer-link-container
+        | email-input is located ${email_social_margin} left social-media-section-title
 
 
 = Footer =
-    | &email-signup-items are horizontally aligned next to each other with ${no_margin} margin
-#    | social-media-link-group-* are horizontally aligned next to each other with ${social_media_icon_margin} margin
-    | email-input is located ${desktop_footer_distance} above social-media-section-title
-
     @on desktop
+        | &email-signup-items are horizontally aligned next to each other with ${no_margin} margin
         | email-input is located ${desktop_footer_distance} above social-media-section-title
         | sister-site-list is horizontally aligned in the center of the screen
         | footer-call is absent in the screen
@@ -70,6 +73,7 @@
         | email-input is located ${tablet_footer_distance} left of social-media-section
         | sister-site-list is horizontally aligned in the center of the screen
     @on mobile
-        | email-input is located ${mobile_footer_distance} above social-media-section
         | sister-site-link is absent in the screen
-        | &footer-customer-support-options are horizontally aligned next to each other with ${social_media_icon_margin} margin
+        | &footer-customer-support-options are horizontally aligned next to each other with ${chat_call_margin} margin
+        | mobile-email-input is located ${mobile_email_footer_margin} below mobile-footer-container
+        | mobile-email-input is located ${email_social_margin} above mobile-social-section-title

@@ -8,13 +8,14 @@
     main-media-controls                 css     div.main-media__controls
     favorite-icon                       css     img.main-media__fav-btn-img
     zoom-icon                           css     span.main-media__zoom-btn-img
+    product-option-size-buttons-*       css     div#product-options__size button.product-options__button
 
 @groups
     media-group         main-media-container,main-media-controls,alternate-images-section
 
 @set
-    alternate_image_margin              5px
-    product_media_margin                ~ 65px
+    alternate_image_margin              ~ 10px
+    product_media_margin                ~ 50px
     media_control_horizontal_margin     ~ 50px
     media_margin                        ~ 0px
 
@@ -26,4 +27,9 @@
         | favorite-icon is located ${media_control_horizontal_margin} left zoom-icon
 
     @on mobile
-        |alternate-images is absent in the screen
+        | main-media-container is 10px wide and 10px high
+        | alternate-images is absent in the screen
+
+= Product Detail =
+    @on desktop
+        | product-option-size-buttons-* are horizontally aligned next to each other with ${alternate_image_margin} margin

@@ -1,27 +1,33 @@
 package com.galenframework.java.sample.tests;
 
 import com.galenframework.api.Galen;
+import com.galenframework.java.sample.components.BoilerPlate;
+import com.galenframework.java.sample.components.GalenSpecPath;
 import com.galenframework.java.sample.components.GalenTestBase;
 import com.galenframework.java.sample.components.RetryAnalyzer;
 import com.galenframework.reports.GalenTestInfo;
 import com.galenframework.reports.HtmlReportBuilder;
 import com.galenframework.reports.model.LayoutReport;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 
 public class ProductDescriptionPageTest extends GalenTestBase {
 
-    @Test(dataProvider = "devices", retryAnalyzer = RetryAnalyzer.class)
+    @Test(dataProvider = "devices", retryAnalyzer = RetryAnalyzer.class, enabled = false)
     public void Product_Image_onDevice(TestDevice device) throws IOException{
-        load("/Burberry-Patchwork-Herringbone-Front-Zip-Sweater-Dark-Gray-Melange/prod189330314/p.prod");
-        JavascriptExecutor js = (JavascriptExecutor)getDriver();
-        js.executeScript("window.scrollTo(0, window.outerHeight)");
-        checkLayout("/specs/ProductDescriptionPage.gspec", device.getTags());
+        load(BoilerPlate.PDP_PAGE);
+        WebElement mediaContainer = new WebDriverWait(getDriver(), 30)
+                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.main-media__container")));
+//        JavascriptExecutor js = (JavascriptExecutor)getDriver();
+//        js.executeScript("window.scrollTo(0, window.outerHeight)");
+        checkLayout(GalenSpecPath.PDP_SPEC, device.getTags());
 //
 //        LayoutReport layoutReport = Galen.checkLayout(getDriver(),
 //                "/specs/ProductDescriptionPage.gspec",
