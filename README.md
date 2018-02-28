@@ -7,6 +7,6 @@ Prerequsites
 3. Gradle 3.1 or above
 
 Run the tests
-OSX - $./gradlew responsivenessTest -Dgalen.device=CHROME
+OSX - $PLATFORM=local ./gradlew responsivenessTest -Dgalen.device=chromeDesktop -Denv=integration
 
 Currently the test runs only on Chrome v61 and above.
