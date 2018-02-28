@@ -27,32 +27,40 @@
       "width": 1366,
       "height": 760
     },
-    "chromeiPadProPortrait": {
+    "iPadProPortrait": {
       "deviceType": "tablet",
       "width": 1024,
       "height" : 1366
     },
-    "chromeiPadProLandScape": {
+    "iPadProLandScape": {
       "deviceType": "tablet",
       "width": 1366,
       "height" : 1024
     },
-    "chromeiPadAir": {
+    "iPadAir": {
       "deviceType": "tablet",
     },
-    "chromeiPhoneX": {
+    "iPhoneX": {
       "deviceType": "mobile",
       "width" : 375,
       "height" : 812
     },
-    "chromeiPhone8": {
+    "iPhone8": {
+      "deviceType": "mobile",
+      "width" : 375,
+      "height" : 667
+    },
+    "iPhone7": {
       "deviceType": "mobile",
       "width" : 375,
       "height" : 667
     }
+
   },
   "BrowserStack": {
-    "userName": "xxxx",
-    "appKey":"yyyy"
+    "userName": "biswajitpattanay1",
+    "appKey":"s1xiWnqpZZ2xyoCntHoj",
+    "capturevideo": "true",
+    "realMobile": "true"
   }
 }

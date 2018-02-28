@@ -14,11 +14,11 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 ext {
-    deviceList = ['chrome', 'firefox', 'windows', 'iPhone']
     ext {
         galenVersion = '2.3.6'
         testNGVersion = '6.7'
         groovyVersion = '2.4.12'
+        chromeDriverVersion = '2.35'
     }
 }
 
@@ -34,8 +34,10 @@ dependencies {
     compile group: 'org.projectlombok', name: 'lombok', version: '1.16.16'
 }
 
-task chromeTest {
+
+task chromeDriverSetup {
     dependsOn unzipChromeDriver
+
     def chromeDriverFileName = Os.isFamily(Os.FAMILY_WINDOWS) ? "chromedriver.exe" : "chromedriver"
 //    systemProperty "webdriver.chrome.driver", new File(unzipChromeDriver.outputs.files.singleFile, chromedriverFilename).absolutePath
 }
@@ -56,11 +58,22 @@ task responsivenessTest (type: Test) {
     System.setProperty("device.width", result["device"][System.getProperty("device")]["width"].toString())
     System.setProperty("device.height", result["device"][System.getProperty("device")]["height"].toString())
 
+
+    // if the platform is Browserstack, get the browserstack configuration values
+    if (System.getenv("PLATFORM").equalsIgnoreCase("BrowserStack")){
+        System.setProperty("browserStack.userName", result["BrowserStack"]["userName"])
+        System.setProperty("browserStack.apiKey", result["BrowserStack"]["appKey"])
+        System.setProperty("browserStack.realMobile", result["BrowserStack"]["realMobile"])
+        System.setProperty("browserStack.captureVideo", result["BrowserStack"]["capturevideo"])
+    }
+
     systemProperties System.properties
 
-//    if (System.getProperty("galen.device").toUpperCase() == "CHROME") {
-//        chromeTest
-//    }
+    if ((System.getProperty("galen.device").toUpperCase() == "CHROME") ||
+            (System.getProperty("platform").equalsIgnoreCase() == 'local'
+                    && System.getProperty("device.type").equalsIgnoreCase() == "mobile")) {
+        chromeDriverSetup
+    }
     useTestNG()
 }
 
