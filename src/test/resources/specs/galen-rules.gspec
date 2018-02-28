@@ -117,7 +117,7 @@
 	@if ${side == "left"}
         ${objectPattern1}:
             left-of ${objectPattern2} ${pixelDistance}
-	@elseif ${side == "right of"}
+	@elseif ${side == "right"}
         ${objectPattern1}:
 		right-of ${objectPattern2} ${pixelDistance}
 	@elseif ${side == "above"}

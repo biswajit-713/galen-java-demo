@@ -1,0 +1,40 @@
+@import galen-rules.gspec
+
+@objects
+    image-container                     css     div.image-container div.main-media__container
+    product-content                     css     div.line-item
+    slick-dots-*                        css     ul.slick-dots>li
+    product-heading                     css     span.product-heading__designer
+    product-name                        css     span.product-name
+    sale-price                          css     div.sale-price
+    promotion-item                      css     div.promotion-item-html
+    product-color-option                css     div.product-options__color button.product-options__button:nth-of-type(1)
+    sku-status-message                  css     div.sku-status-messages>p
+    add-to-bag-button                   css     div#addToBagButton button
+    favorite-icon                       css     img.main-media__fav-btn-img
+    zoom-icon                           css     span.main-media__zoom-btn-img
+
+
+@groups
+    stock-detail                product-color-option,sku-status-message,add-to-bag-button
+    product-details             product-heading,product-name,sale-price,promotion-item
+
+@set
+    slick_dot_margin                        ~ 10px
+    media_control_horizontal_margin         ~ 50px
+    stock_status_margin                     20px
+    alternate_image_margin                  10px
+    image_item_margin                       10px
+    button_height                           42px
+    button_width                            259px
+
+= Media =
+    @on desktop, tablet
+        | slick-dots-* are horizontally aligned next to each other with ${alternate_image_margin} margin
+        | favorite-icon is located ${media_control_horizontal_margin} left zoom-icon
+
+= Product Description =
+    @on desktop, tablet
+        | image-container is located ${image_item_margin} left product-content
+        | &stock-details are vertically aligned next to each other with ${stock_status_margin} margin
+        | add-to-bag-button is ${button_width} wide and ${button_height} high
