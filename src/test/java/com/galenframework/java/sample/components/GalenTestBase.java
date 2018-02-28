@@ -6,16 +6,15 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.testng.annotations.DataProvider;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.Arrays.asList;
 
@@ -38,7 +37,7 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
         String platform = System.getProperty("platform").toLowerCase();
 
         if (platform.equalsIgnoreCase("local")){
-            driver = returnDriverForLocalEnvironment(driver, testBrowser);
+            driver = getDriverForLocalEnvironment(driver, testBrowser);
 
             // Resize the window
             if (args.length > 0) {
@@ -49,8 +48,8 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
                     }
                 }
             }
-
         } else if (platform.equalsIgnoreCase("browserstack")) {
+            driver = getDriverForBrowserStack(driver, testBrowser);
 
         } else if (platform.equalsIgnoreCase("saucelabs")) {
 
@@ -60,6 +59,9 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
 
         }
 
+        driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
+        driver.manage().timeouts().setScriptTimeout(20, TimeUnit.SECONDS);
         return driver;
 
     }
@@ -82,27 +84,61 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
     }
 
     // set up the local environment
-    private WebDriver returnDriverForLocalEnvironment(WebDriver driver, String device){
+    private WebDriver getDriverForLocalEnvironment(WebDriver driver, String device){
 
         DesiredCapabilities caps;
 
-        if (device.contains("chrome")) {
-            if (device.contains("chrome")){
-                ChromeDriverService service = new ChromeDriverService.Builder()
-                        .usingAnyFreePort()
-                        .build();
-                driver = new ChromeDriver(service);
-            } else if (device.contains("firefox")) {
-                caps = DesiredCapabilities.firefox();
-                driver = new FirefoxDriver(caps);
-            } else if (device.contains("safari")) {
-                caps = DesiredCapabilities.safari();
-                driver = new SafariDriver(caps);
-            }
-
+        if (device.contains("chrome")){
+            ChromeDriverService service = new ChromeDriverService.Builder()
+                    .usingAnyFreePort()
+                    .build();
+            driver = new ChromeDriver(service);
+        } else if (device.contains("firefox")) {
+            caps = DesiredCapabilities.firefox();
+            driver = new FirefoxDriver(caps);
+        } else if (device.contains("safari")) {
+            caps = DesiredCapabilities.safari();
+            driver = new SafariDriver(caps);
+        } else {
+            ChromeDriverService service = new ChromeDriverService.Builder()
+                    .usingAnyFreePort()
+                    .build();
+            driver = new ChromeDriver(service);
         }
 
         return driver;
+    }
+
+    //set up for browserstack
+    @SneakyThrows
+    private WebDriver getDriverForBrowserStack(WebDriver driver, String device){
+        String BROWSERSTACK_URL = "https://"
+                + System.getProperty("browserStack.userName")
+                + ":" + System.getProperty("browserStack.apiKey")
+                + "@hub-cloud.browserstack.com/wd/hub";
+
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setCapability("realMobile", System.getProperty("browserStack.realMobile"));
+        caps.setCapability("realMobile", System.getProperty("browserStack.captureVideo"));
+        caps.setCapability("acceptSslCerts", "true");
+
+        if (device.equalsIgnoreCase("iPhone7")){
+            caps.setCapability("browserName", "iPhone");
+            caps.setCapability("device", "iPhone 7");
+        } else if (device.equalsIgnoreCase("iPhone8")){
+            caps.setCapability("browserName", "iPhone");
+            caps.setCapability("device", "iPhone 8");
+        } else if (device.equalsIgnoreCase("iPhoneX")){
+            caps.setCapability("browserName", "iPhone");
+            caps.setCapability("device", "iPhone X");
+        } else if (device.equalsIgnoreCase("chromeDesktop")){
+            caps.setCapability("os", "Windows");
+            caps.setCapability("os_version", "10");
+            caps.setCapability("browser", "Chrome");
+            caps.setCapability("browserstack.local", "false");
+        }
+
+        return new RemoteWebDriver(new URL(BROWSERSTACK_URL), caps);
     }
 
     public static class TestDevice {
