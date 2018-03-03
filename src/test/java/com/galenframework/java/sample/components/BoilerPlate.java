@@ -3,16 +3,14 @@ package com.galenframework.java.sample.components;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Created by biswajip on 9/16/17.
  */
 public class BoilerPlate {
-
-    public static final String HOME_PAGE = "/";
-    public static final String PLP_PAGE = "/Test-Silo/Katies-Test-Cats/Biswajits-Category/FAW-5219-Endeca-Category/T1CAT42950731_T1CAT42640749_T1CAT42270731_T1CAT39040731/c.cat?navpath=cat000000_T1CAT39040731_T1CAT42270731_T1CAT42640749_T1CAT42950731&source=leftNav";
-    public static final String PDP_PAGE = "prod189330314/p.prod"; //"/prod204860125/p.prod";
 
     public static void RegisterCookie(WebDriver driver) {
         Cookie homePageCookie = new Cookie.Builder("ihp", "DTT8")
@@ -68,5 +66,12 @@ public class BoilerPlate {
         driver.manage().addCookie(plpPageCookie);
         driver.manage().addCookie(favorite);
         driver.manage().addCookie(quickLook);
+    }
+
+    public static String getCurrentDate(){
+        DateFormat dateFormat = new SimpleDateFormat("yyyymmdd");
+
+        Calendar cal = Calendar.getInstance();
+        return dateFormat.format(cal.getTime());
     }
 }

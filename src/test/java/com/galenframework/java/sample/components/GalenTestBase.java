@@ -1,22 +1,29 @@
 package com.galenframework.java.sample.components;
 
 import com.galenframework.api.Galen;
+import com.galenframework.browser.SeleniumBrowser;
+import com.galenframework.reports.GalenTestInfo;
+import com.galenframework.reports.HtmlReportBuilder;
+import com.galenframework.reports.model.LayoutReport;
+import com.galenframework.speclang2.pagespec.SectionFilter;
+import com.galenframework.specs.page.Locator;
+import com.galenframework.support.LayoutValidationException;
 import com.galenframework.testng.GalenTestNgTestBase;
 import lombok.SneakyThrows;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.testng.annotations.DataProvider;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Arrays.asList;
@@ -91,18 +98,18 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
     // set up the local environment
     private WebDriver getDriverForLocalEnvironment(WebDriver driver, String device){
 
-        DesiredCapabilities caps;
-
         if (device.contains("chrome")){
             ChromeDriverService service = new ChromeDriverService.Builder()
                     .usingAnyFreePort()
                     .build();
             driver = new ChromeDriver(service);
         } else if (device.contains("firefox")) {
-            caps = DesiredCapabilities.firefox();
-            driver = new FirefoxDriver(caps);
+//            System.setProperty("webdriver.gecko.driver", "/Users/biswajip/Documents/drivers/geckodriver");
+            FirefoxOptions options = new FirefoxOptions();
+            options.setCapability("marionette", true);
+            driver = new FirefoxDriver(options);
         } else if (device.contains("safari")) {
-            caps = DesiredCapabilities.safari();
+            DesiredCapabilities caps = DesiredCapabilities.safari();
             driver = new SafariDriver(caps);
         } else {
             ChromeDriverService service = new ChromeDriverService.Builder()
@@ -144,8 +151,33 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
         }
 
         return new RemoteWebDriver(new URL(BROWSERSTACK_URL), caps);
+    }
+
+    // method to execute galen spec
+    protected void checkPageLayout(String specPath, List<String> includedTags, Map<String, Locator> galenLocator)
+            throws IOException{
+
+        SectionFilter sectionFilter = new SectionFilter(includedTags, Collections.<String>emptyList());
+
+        LayoutReport layoutReport = Galen.checkLayout(new SeleniumBrowser(getDriver()),
+                specPath, sectionFilter,
+                new Properties(), Collections.emptyMap(), null, null, galenLocator);
+
+        List<GalenTestInfo> tests = new LinkedList<>();
+        GalenTestInfo test = GalenTestInfo.fromString(testInfo.get().getName());
+
+        test.getReport().layout(layoutReport, "Checking " + this.getClass().getSimpleName() + " for " +
+                includedTags.get(0));
+        tests.add(test);
+        new HtmlReportBuilder().build(tests, "target/galen-" + includedTags.get(0) + "-reports-" +
+                                        BoilerPlate.getCurrentDate());
+
+        if (layoutReport.errors() > 0){
+             throw new LayoutValidationException(specPath, layoutReport, sectionFilter);
+         }
 
     }
+
     public static class TestDevice {
         private final String name;
         private final Dimension screenSize;
