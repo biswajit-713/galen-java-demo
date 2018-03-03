@@ -1,9 +1,6 @@
 package com.galenframework.java.sample.tests;
 
-import com.galenframework.java.sample.components.BoilerPlate;
-import com.galenframework.java.sample.components.GalenSpecPath;
-import com.galenframework.java.sample.components.GalenTestBase;
-import com.galenframework.java.sample.components.RetryAnalyzer;
+import com.galenframework.java.sample.components.*;
 import lombok.SneakyThrows;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -21,9 +18,9 @@ public class ProductListPageTest extends GalenTestBase {
     @Test(dataProvider = "devices", retryAnalyzer = RetryAnalyzer.class, enabled = false)
     @SneakyThrows
     public void Quick_Look_onDevice(TestDevice device) throws IOException {
-        load(BoilerPlate.PLP_PAGE);
+        load(Config.PLP_PAGE);
         BoilerPlate.RegisterCookie(getDriver());
-        load(BoilerPlate.PLP_PAGE);
+        load(Config.PLP_PAGE);
 
         WebElement quickLookButton = new WebDriverWait(getDriver(), 30)
                 .until(ExpectedConditions.elementToBeClickable(By.cssSelector("button.quick-look")));
