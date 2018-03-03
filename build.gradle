@@ -20,6 +20,7 @@ ext {
         testNGVersion = '6.7'
         groovyVersion = '2.4.12'
         chromeDriverVersion = '2.35'
+        geckoDriverVersion = '0.19.1'
     }
 }
 
