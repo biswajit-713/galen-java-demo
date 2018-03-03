@@ -1,29 +1,28 @@
 package com.galenframework.java.sample.tests;
 
-import com.galenframework.java.sample.components.BoilerPlate;
-import com.galenframework.java.sample.components.GalenSpecPath;
-import com.galenframework.java.sample.components.GalenTestBase;
-import com.galenframework.java.sample.components.RetryAnalyzer;
+import com.galenframework.java.sample.components.*;
 import com.galenframework.java.sample.pageObjects.HomePage;
+import com.galenframework.specs.page.Locator;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HomePageTest extends GalenTestBase {
 
     @Test(dataProvider = "devices", retryAnalyzer = RetryAnalyzer.class, enabled = true)
     public void homePage_EmailSection_onDevice(TestDevice device) throws IOException {
 
-        load(BoilerPlate.HOME_PAGE);
-//        JavascriptExecutor js = (JavascriptExecutor)getDriver();
-//        js.executeScript("window.scrollTo(0, window.outerHeight)");
-        checkLayout(GalenSpecPath.INTL_HOME_PAGE_SPEC, device.getTags());
+        load(Config.HOME_PAGE);
+//        checkLayout(GalenSpecPath.INTL_HOME_PAGE_SPEC, device.getTags());
 
+        checkPageLayout(GalenSpecPath.INTL_HOME_PAGE_SPEC, device.getTags(), Locators.getPageLocators());
     }
 
     @Test(dataProvider = "devices", retryAnalyzer = RetryAnalyzer.class, enabled = false)
     public void  countryChanger_modal_onDevice(TestDevice device) throws  IOException {
-        load(BoilerPlate.HOME_PAGE);
+        load(Config.HOME_PAGE);
         BoilerPlate.RegisterCookie(getDriver());
         load("/");
 
@@ -31,7 +30,7 @@ public class HomePageTest extends GalenTestBase {
         HomePage homePage = new HomePage(getDriver());
         homePage.openCountryChangeModal();
 
-        checkLayout(GalenSpecPath.COUNTRY_CHANGER_MODAL_SPEC, device.getTags());
+        checkPageLayout(GalenSpecPath.COUNTRY_CHANGER_MODAL_SPEC, device.getTags(), Locators.getPageLocators());
 
     }
 
