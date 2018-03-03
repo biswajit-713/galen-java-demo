@@ -117,17 +117,15 @@
 	@if ${side == "left"}
         ${objectPattern1}:
             left-of ${objectPattern2} ${pixelDistance}
-<<<<<<< HEAD
-	@elseif ${side == "right"}
+	@elseif ${side == "right of"}
         ${objectPattern1}:
-		right-of ${objectPattern2} ${pixelDistance}
+		    right-of ${objectPattern2} ${pixelDistance}
 	@elseif ${side == "above"}
         ${objectPattern1}:
-		above ${objectPattern2} ${pixelDistance}
+		    above ${objectPattern2} ${pixelDistance}
 	@elseif ${side == "below"}
         ${objectPattern1}:
-		below ${objectPattern2} ${pixelDistance}
-=======
+		    below ${objectPattern2} ${pixelDistance}
 	@elseif ${side == "right of"}
         ${objectPattern1}:
     		right-of ${objectPattern2} ${pixelDistance}
@@ -137,7 +135,6 @@
 	@elseif ${side == "below"}
         ${objectPattern1}:
     		below ${objectPattern2} ${pixelDistance}
->>>>>>> e7f72b0e77c78193626f74aad94a31ea3f61afe2
 
 
 # sister-site-list is vertically aligned in the center of the screen
