@@ -1,6 +1,8 @@
 package com.galenframework.java.sample.tests;
 
 import com.galenframework.java.sample.components.*;
+import com.galenframework.java.sample.pageObjects.ProductListPage;
+import com.galenframework.java.sample.pageObjects.QuickLook;
 import lombok.SneakyThrows;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -15,26 +17,21 @@ import java.io.IOException;
  */
 public class ProductListPageTest extends GalenTestBase {
 
-    @Test(dataProvider = "devices", retryAnalyzer = RetryAnalyzer.class, enabled = false)
-    @SneakyThrows
+    @Test(dataProvider = "devices", retryAnalyzer = RetryAnalyzer.class, enabled = true)
     public void Quick_Look_onDevice(TestDevice device) throws IOException {
         load(Config.PLP_PAGE);
         BoilerPlate.RegisterCookie(getDriver());
         load(Config.PLP_PAGE);
 
-        WebElement quickLookButton = new WebDriverWait(getDriver(), 30)
-                .until(ExpectedConditions.elementToBeClickable(By.cssSelector("button.quick-look")));
-        quickLookButton.click();
+        ProductListPage plp = new ProductListPage(getDriver());
+        assert plp.isPageLoaded() == true;
 
-        WebElement quickLookModal = new WebDriverWait(getDriver(), 30)
-                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.nm-modal__content")));
+        plp.launchQuickLookModal();
 
-        getDriver().findElement(By.xpath("//div[@id='product-options__size']//button[not(contains(@class, 'product-options__button--disabled'))]")).click();
-        getDriver().findElement(By.xpath("//div[@id='product-options__color']//button[not(contains(@class, 'product-options__button--disabled'))]")).click();
+        QuickLook quickLook = new QuickLook(getDriver());
+        quickLook.selectProductSizeAndColor();
 
-        WebElement inStockStatus = new WebDriverWait(getDriver(), 30)
-                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.sku-status-messages")));
-        checkLayout(GalenSpecPath.QUICK_LOOK_SPEC, device.getTags());
+        checkPageLayout(GalenSpecPath.QUICK_LOOK_SPEC, device.getTags(), Locators.getPageLocators());
 
     }
 }
