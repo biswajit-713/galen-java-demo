@@ -17,8 +17,6 @@ public class ProductDescriptionPageTest extends GalenTestBase {
         load(Config.PDP_PAGE);
         WebElement mediaContainer = new WebDriverWait(getDriver(), 30)
                 .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.main-media__container")));
-//        JavascriptExecutor js = (JavascriptExecutor)getDriver();
-//        js.executeScript("window.scrollTo(0, window.outerHeight)");
         checkLayout(GalenSpecPath.PDP_SPEC, device.getTags());
 //
     }
