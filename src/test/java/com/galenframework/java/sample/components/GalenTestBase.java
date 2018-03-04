@@ -30,12 +30,7 @@ import static java.util.Arrays.asList;
 
 public abstract class GalenTestBase extends GalenTestNgTestBase {
 
-    private static final String USER_NAME = "biswajitpattanay1";
-    private static final String API_KEY = "s1xiWnqpZZ2xyoCntHoj";
-    private static final String ENV_URL = "https://" + USER_NAME + ":" + API_KEY + "@hub.browserstack.com/wd/hub";
     private static final String APP_URL = System.getProperty("applicationUrl");
-    private String selectedBrowser;
-
 
     @Override
     @SneakyThrows
@@ -86,7 +81,7 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
     @DataProvider(name = "devices")
     public Object [][] devices () {
 
-        selectedBrowser = System.getProperty("device");
+        String selectedBrowser = System.getProperty("device");
         return new Object[][] {
                 {new TestDevice(selectedBrowser,
                         new Dimension(Integer.parseInt(System.getProperty("device.width")),
@@ -194,18 +189,15 @@ public abstract class GalenTestBase extends GalenTestNgTestBase {
         }
 
         public Dimension getScreenSize() {
-
             return screenSize;
         }
 
         public List<String> getTags() {
-
             return tags;
         }
 
         @Override
         public String toString() {
-
             return String.format("%s %dx%d", name, screenSize.width, screenSize.height);
         }
     }
