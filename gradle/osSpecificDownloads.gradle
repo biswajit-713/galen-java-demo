@@ -1,0 +1,47 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+import org.apache.commons.io.*
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "commons-io:commons-io:2.4"
+    }
+}
+
+task downloadChromeDriver {
+    def outputFile = file("$buildDir/webdriver/chromedriver.zip")
+    def chromeDriverVersion = "2.35"
+    inputs.property("chromeDriverVersion", chromeDriverVersion)
+    outputs.file(outputFile)
+    def driverOsFilenamePart
+
+    if (Os.isFamily(Os.FAMILY_WINDOWS)){
+        driverOsFilenamePart = "win32"
+    } else if (Os.isFamily(Os.FAMILY_MAC)){
+        driverOsFilenamePart = "mac64"
+    } else if (Os.isFamily(Os.FAMILY_UNIX)){
+        driverOsFilenamePart = Os.isArch("amd64") ? "Linux64" : "Linux32"
+    }
+    GFileUtils.copyURLToFile(new URL("http://chromedriver.storage.googleapis.com/${chromeDriverVersion}/chromedriver_${driverOsFilenamePart}.zip"), outputFile)
+}
+
+task unzipChromeDriver(type: Copy) {
+    println "I am unzipping driver"
+    def outputDir = file("$buildDir/webdriver/chromedriver")
+    println "===1==="
+
+    dependsOn downloadChromeDriver
+    outputs.dir(outputDir)
+    println "===2==="
+
+    println downloadChromeDriver.outputs.files.singleFile
+    println outputDir
+    println "===3==="
+
+    from(zipTree(downloadChromeDriver.outputs.files.singleFile))
+    into(outputDir)
+    println "===4==="
+
+}
