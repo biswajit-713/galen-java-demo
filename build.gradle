@@ -43,8 +43,7 @@ task chromeDriverSetup {
 
 task chromeTest {
     dependsOn unzipChromeDriver
-    def chromeDriverFileName = Os.isFamily(Os.FAMILY_WINDOWS) ? "chromedriver.exe" : "chromedriver"
-//    systemProperty "webdriver.chrome.driver", new File(unzipChromeDriver.outputs.files.singleFile, chromedriverFilename).absolutePath
+    System.setProperty("webdriver.chrome.driver", new File(unzipChromeDriver.outputs.files.singleFile, Os.isFamily(Os.FAMILY_WINDOWS) ? "chromedriver.exe" : "chromedriver").absolutePath)
 }
 
 
@@ -74,16 +73,17 @@ task responsivenessTest (type: Test) {
 
     systemProperties System.properties
 
-    if ((System.getProperty("galen.device").toUpperCase() == "CHROME") ||
+    if((System.getProperty("galen.device").toUpperCase().contains("CHROME")) ||
             (System.getProperty("platform").equalsIgnoreCase() == 'local'
                     && System.getProperty("device.type").equalsIgnoreCase() == "mobile")) {
         chromeDriverSetup
     }
+
     systemProperties System.properties
 
-//    if (System.getProperty("galen.device").toUpperCase() == "CHROME") {
-//        chromeTest
-//    }
+    if (System.getProperty("galen.device").toUpperCase() == "CHROME") {
+        chromeTest
+    }
     useTestNG()
 }
 
