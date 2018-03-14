@@ -12,7 +12,7 @@ buildscript {
 
 task downloadChromeDriver {
     def outputFile = file("$buildDir/webdriver/chromedriver.zip")
-    def chromeDriverVersion = "2.35"
+
     inputs.property("chromeDriverVersion", chromeDriverVersion)
     outputs.file(outputFile)
     def driverOsFilenamePart
@@ -28,20 +28,18 @@ task downloadChromeDriver {
 }
 
 task unzipChromeDriver(type: Copy) {
-    println "I am unzipping driver"
     def outputDir = file("$buildDir/webdriver/chromedriver")
-    println "===1==="
 
     dependsOn downloadChromeDriver
     outputs.dir(outputDir)
-    println "===2==="
-
-    println downloadChromeDriver.outputs.files.singleFile
-    println outputDir
-    println "===3==="
 
     from(zipTree(downloadChromeDriver.outputs.files.singleFile))
     into(outputDir)
-    println "===4==="
 
 }
+
+task chromeDriverSetup {
+    dependsOn unzipChromeDriver
+}
+
+

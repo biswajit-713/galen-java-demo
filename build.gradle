@@ -1,17 +1,9 @@
-import org.apache.tools.ant.taskdefs.condition.Os
 import groovy.json.JsonSlurper
-
-apply plugin: 'java'
-apply plugin: 'maven'
-apply from: "gradle/osSpecificDownloads.gradle"
 
 group = 'com.galenframework'
 version = '0.1-SNAPSHOT'
 
 description = """Galen Framework Sample Java Test Project"""
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 ext {
     deviceList = ['chrome', 'firefox', 'windows', 'iPhone']
@@ -23,6 +15,13 @@ ext {
         geckoDriverVersion = '0.19.1'
     }
 }
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply from: "gradle/osSpecificDownloads.gradle"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -37,22 +36,7 @@ dependencies {
 }
 
 
-task chromeDriverSetup {
-    dependsOn unzipChromeDriver
-}
-
-task chromeTest {
-    dependsOn unzipChromeDriver
-    System.setProperty("webdriver.chrome.driver", new File(unzipChromeDriver.outputs.files.singleFile, Os.isFamily(Os.FAMILY_WINDOWS) ? "chromedriver.exe" : "chromedriver").absolutePath)
-}
-
-
-task responsivenessTest (type: Test) {
-
-    // skip the cache and always run the task
-    outputs.upToDateWhen {
-        false
-    }
+task loadSystemProperties {
 
     def result = loadJSONConfiguration()
     System.setProperty("applicationUrl", result.getAt("environment").getAt(System.getProperty("env", "test")))
@@ -62,6 +46,7 @@ task responsivenessTest (type: Test) {
     System.setProperty("device.width", result["device"][System.getProperty("device")]["width"].toString())
     System.setProperty("device.height", result["device"][System.getProperty("device")]["height"].toString())
 
+    System.setProperty("localBrowser", "Chrome")
 
     // if the platform is Browserstack, get the browserstack configuration values
     if (System.getenv("PLATFORM").equalsIgnoreCase("BrowserStack")){
@@ -71,34 +56,37 @@ task responsivenessTest (type: Test) {
         System.setProperty("browserStack.captureVideo", result["BrowserStack"]["capturevideo"])
     }
 
-    systemProperties System.properties
-
+    def browser = ""
     if((System.getProperty("galen.device").toUpperCase().contains("CHROME")) ||
-            (System.getProperty("platform").equalsIgnoreCase() == 'local'
+            (System.getProperty("platform").equalsIgnoreCase() == "local"
                     && System.getProperty("device.type").equalsIgnoreCase() == "mobile")) {
-        chromeDriverSetup
+        browser = "Chrome"
+        dependsOn chromeDriverSetup
+    } else if (System.getProperty("galen.device").toUpperCase().contains("FIREFOX")
+                    && System.getProperty("platform").equalsIgnoreCase() == "local"){
+        browser = "Firefox"
+//        dependsOn firefoxDriverSetup
+    } else if (System.getProperty("galen.device").toUpperCase().contains("SAFARI")
+            && System.getProperty("platform").equalsIgnoreCase() == "local"){
+        browser = "Safari"
+//        dependsOn safariDriverSetup
     }
+}
+
+
+task responsivenessTest (type: Test) {
+
+    // skip the cache and always run the task
+    outputs.upToDateWhen {
+        false
+    }
+    dependsOn loadSystemProperties
 
     systemProperties System.properties
 
-    if (System.getProperty("galen.device").toUpperCase() == "CHROME") {
-        chromeTest
-    }
     useTestNG()
 }
 
-//def loadConfiguration(){
-//    def device = System.getProperty("galen.device", "test")
-//    def environment = System.getProperty("env", "test")
-//    project.ext.environment = environment
-//    project.ext.device = device
-//
-//    def configFile = file('config.groovy')
-//    def envConfig = new ConfigSlurper(environment).parse(configFile.toURI().toURL())
-//    def deviceConfig = new ConfigSlurper(device).parse(configFile.toURI().toURL())
-//    project.ext.envConfig = envConfig
-//    project.ext.deviceConfig = deviceConfig
-//}
 
 def loadJSONConfiguration(){
     def slurper = new JsonSlurper()
