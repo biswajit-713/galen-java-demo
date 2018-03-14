@@ -80,7 +80,7 @@
 	@elseif ${side == "below"}
 		below ${objectPattern} ${pixelDistance}
 
-# 7. elements are aligned horizontally next to each other with specified margin
+# 7. elements are horizontally aligned next to each other with specified margin
 # e.g.
 # elements_1:
 #	left-of element_2 10px

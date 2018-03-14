@@ -1,3 +1,4 @@
+@import galen-rules.gspec
 
 @objects
     change-country-image        css     div.country-selector-modal__image
@@ -11,12 +12,12 @@
     modal-buttons               confirm-button, cancel-button
 
 @set
-    button_horizontal_margin             3px
+    button_horizontal_margin             ~20px
     button_vertical_margin               3px
 
 = Modal =
     @on desktop, tablet
-        | &modal-buttons are horizontally aligned with ${button_horizontal_margin} margin
+        | &modal-buttons are horizontally aligned next to each other with ${button_horizontal_margin} margin
         | change-country-image is located ${button_horizontal_margin} left description-text
 
     @on mobile
@@ -29,6 +30,4 @@
 
     @on mobile
         | &modal-buttons are aligned vertically above each other with ${button_vertical_margin} margin
-
-        change-country-image:
-            absent
+        | change-country-image is absent in the screen
