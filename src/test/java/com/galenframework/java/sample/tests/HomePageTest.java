@@ -14,7 +14,7 @@ public class HomePageTest extends GalenTestBase {
         checkPageLayout(GalenSpecPath.INTL_HOME_PAGE_SPEC, device.getTags(), Locators.getPageLocators());
     }
 
-    @Test(dataProvider = "devices", retryAnalyzer = RetryAnalyzer.class, enabled = false)
+    @Test(dataProvider = "devices", retryAnalyzer = RetryAnalyzer.class, enabled = true)
     public void  countryChanger_modal_onDevice(TestDevice device) throws  IOException {
         load(Config.HOME_PAGE);
         BoilerPlate.RegisterCookie(getDriver());

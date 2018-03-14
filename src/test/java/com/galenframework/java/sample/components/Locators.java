@@ -1,15 +1,12 @@
 package com.galenframework.java.sample.components;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import com.galenframework.specs.page.Locator;
-import lombok.SneakyThrows;
 
 /**
  * Created by biswajip on 3/3/18.
@@ -37,5 +34,20 @@ public class Locators {
             domOobjectProperties.put((String)key, properties.getProperty((String)key));
         }
         return domOobjectProperties;
+    }
+
+    public static String getLocatorProperty(String locatorKey) throws IOException{
+        Properties properties = new Properties();
+        properties.load(new FileInputStream(Config.PROPERTIES_PATH));
+
+        //TODO - write the below code in java8
+        for (Map.Entry<Object, Object> entry: properties.entrySet()){
+            if (locatorKey.equalsIgnoreCase((String) entry.getKey())){
+                System.out.println("The locator: " + entry.getValue());
+                return (String) entry.getValue();
+            }
+        }
+
+        return null;
     }
 }
